@@ -10,11 +10,11 @@ import (
 	"github.com/go-chi/chi/v5"
 	chimw "github.com/go-chi/chi/v5/middleware"
 
-	"filelit/internal/auth"
-	"filelit/internal/config"
-	"filelit/internal/handlers"
-	filefs "filelit/internal/storage/fs"
-	"filelit/internal/store"
+	"fling/internal/auth"
+	"fling/internal/config"
+	"fling/internal/handlers"
+	filefs "fling/internal/storage/fs"
+	"fling/internal/store"
 )
 
 var (
@@ -26,10 +26,10 @@ var (
 var staticFS embed.FS
 
 func main() {
-	log.Printf("FileLit %s (%s)", version, commit)
+	log.Printf("Fling %s (%s)", version, commit)
 
 	cfg := config.Load()
-	if strings.TrimSpace(cfg.SecretKey) == "change-me-filelit-dev-secret" {
+	if strings.TrimSpace(cfg.SecretKey) == "change-me-fling-dev-secret" {
 		log.Printf("WARNING: using the default SECRET_KEY; set a long random value in production")
 	}
 

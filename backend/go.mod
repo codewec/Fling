@@ -1,4 +1,4 @@
-module filelit
+module fling
 
 go 1.27.3
 

@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"filelit/internal/storage"
+	"fling/internal/storage"
 )
 
 type Store struct {

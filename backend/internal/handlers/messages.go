@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"filelit/internal/store"
+	"fling/internal/store"
 )
 
 const (

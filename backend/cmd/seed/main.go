@@ -1,10 +1,10 @@
-// Command seed populates a FileLit database with demo data: a few buckets
+// Command seed populates a Fling database with demo data: a few buckets
 // (public, pinned, PIN-protected, private) and sample messages, including a
 // small text file uploaded through the storage abstraction.
 //
 // Usage:
 //
-//	go run ./cmd/seed -db ./data/filelit.db -files ./data/files
+//	go run ./cmd/seed -db ./data/fling.db -files ./data/files
 package main
 
 import (
@@ -14,13 +14,13 @@ import (
 	"log"
 	"path/filepath"
 
-	"filelit/internal/auth"
-	"filelit/internal/storage/fs"
-	"filelit/internal/store"
+	"fling/internal/auth"
+	"fling/internal/storage/fs"
+	"fling/internal/store"
 )
 
 func main() {
-	dbPath := flag.String("db", "./data/filelit.db", "path to the SQLite database")
+	dbPath := flag.String("db", "./data/fling.db", "path to the SQLite database")
 	filesDir := flag.String("files", "./data/files", "path to the file storage directory")
 	owner := flag.String("owner", "alice", "owner identity for the private bucket (set via AUTH_USER_HEADER)")
 	flag.Parse()
@@ -58,11 +58,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("create bucket: %v", err)
 	}
-	addText(open.ID, "alice", "Welcome to FileLit! Drop files here to move them between devices.", true)
+	addText(open.ID, "alice", "Welcome to Fling! Drop files here to move them between devices.", true)
 	addText(open.ID, "bob", "Nice — like a clipboard that lives on the LAN.", false)
 	addText(open.ID, "alice", "Exactly. Text is selectable, files are one click away.", false)
 
-	content := []byte("# FileLit demo\n\nThis text file was created by the seed script.\n")
+	content := []byte("# Fling demo\n\nThis text file was created by the seed script.\n")
 	key := open.ID + "/" + store.NewID()
 	info, err := files.Save(ctx, key, bytes.NewReader(content))
 	if err != nil {

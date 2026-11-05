@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"filelit/internal/auth"
+	"fling/internal/auth"
 )
 
 type createBucketRequest struct {

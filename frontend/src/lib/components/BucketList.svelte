@@ -74,7 +74,8 @@
 
 <div class="flex h-full min-h-0 flex-col">
   <div class="flex items-center gap-2 px-4 pt-4 pb-3">
-    <span class="flex-1 text-lg font-semibold tracking-tight">FileLit</span>
+    <img src="/logo.svg" alt="Fling logo" class="size-7 shrink-0" />
+    <span class="flex-1 text-lg font-semibold tracking-tight">Fling</span>
     {#if $auth?.user}
       <span
         class="flex max-w-32 items-center gap-1 rounded-full bg-muted px-2 py-1 text-xs text-muted-foreground"

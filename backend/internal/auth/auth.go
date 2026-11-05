@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"filelit/internal/config"
+	"fling/internal/config"
 )
 
 // Guard decides whether a request may proceed without a login challenge.
@@ -73,9 +73,9 @@ type Service struct {
 }
 
 const (
-	cookieSession = "filelit_session"
-	cookieUnlock  = "filelit_unlock"
-	cookieFP      = "filelit_fp"
+	cookieSession = "fling_session"
+	cookieUnlock  = "fling_unlock"
+	cookieFP      = "fling_fp"
 
 	sessionTTL = 30 * 24 * time.Hour
 )
@@ -125,7 +125,7 @@ func (s *Service) Middleware(cfg *config.Config) func(http.Handler) http.Handler
 				next.ServeHTTP(w, r)
 				return
 			}
-			w.Header().Set("WWW-Authenticate", "FileLitPassword")
+			w.Header().Set("WWW-Authenticate", "FlingPassword")
 			http.Error(w, `{"error":"authentication required"}`, http.StatusUnauthorized)
 		})
 	}

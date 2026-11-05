@@ -14,10 +14,10 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"filelit/internal/auth"
-	"filelit/internal/config"
-	filefs "filelit/internal/storage/fs"
-	"filelit/internal/store"
+	"fling/internal/auth"
+	"fling/internal/config"
+	filefs "fling/internal/storage/fs"
+	"fling/internal/store"
 )
 
 type testEnv struct {
@@ -326,7 +326,7 @@ func TestPINLockoutExpiry(t *testing.T) {
 
 func TestSharedPasswordAuth(t *testing.T) {
 	e := newTestEnv(t, func(c *config.Config) {
-		c.FileLitPassword = "s3cret"
+		c.FlingPassword = "s3cret"
 		c.TrustedHosts = []string{"lan.internal"}
 	})
 

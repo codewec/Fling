@@ -26,7 +26,7 @@
 </script>
 
 <svelte:head>
-  <title>FileLit</title>
+  <title>Fling</title>
 </svelte:head>
 
 <ModeWatcher />

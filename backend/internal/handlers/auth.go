@@ -25,7 +25,7 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &req) {
 		return
 	}
-	if subtle.ConstantTimeCompare([]byte(req.Password), []byte(s.Cfg.FileLitPassword)) != 1 {
+	if subtle.ConstantTimeCompare([]byte(req.Password), []byte(s.Cfg.FlingPassword)) != 1 {
 		writeError(w, http.StatusUnauthorized, "wrong password")
 		return
 	}

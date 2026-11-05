@@ -13,7 +13,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"filelit/internal/store"
+	"fling/internal/store"
 )
 
 // UploadFile accepts one file via multipart/form-data (field "file",

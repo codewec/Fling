@@ -16,7 +16,7 @@ func TestSaveOpenDeleteRoundtrip(t *testing.T) {
 	}
 	ctx := context.Background()
 
-	payload := bytes.Repeat([]byte("filelit-"), 10000)
+	payload := bytes.Repeat([]byte("fling-"), 10000)
 	info, err := s.Save(ctx, "bucket/msg", bytes.NewReader(payload))
 	if err != nil {
 		t.Fatal(err)

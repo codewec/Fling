@@ -17,7 +17,7 @@ concurrency:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: codewec/filelit
+  IMAGE_NAME: codewec/fling
 
 jobs:
   publish:
@@ -46,7 +46,7 @@ jobs:
             type=raw,value=latest,enable=${{ github.event_name == 'release' }}
             type=raw,value=${{ github.event.release.tag_name || 'unused' }},enable=${{ github.event_name == 'release' }}
           labels: |
-            org.opencontainers.image.title=FileLit
+            org.opencontainers.image.title=Fling
             org.opencontainers.image.description=Local-network file exchange service styled as a modern messenger
       - name: Resolve embedded version
         id: build-info

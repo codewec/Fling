@@ -22,7 +22,7 @@ run: build
 
 seed:
 	mkdir -p $(DATA_DIR)/files
-	cd backend && go run ./cmd/seed -db $(abspath $(DATA_DIR)/filelit.db) -files $(abspath $(DATA_DIR)/files)
+	cd backend && go run ./cmd/seed -db $(abspath $(DATA_DIR)/fling.db) -files $(abspath $(DATA_DIR)/files)
 
 dev-backend:
 	cd backend && go run ./cmd/server

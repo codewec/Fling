@@ -1,4 +1,4 @@
-// Package handlers exposes the FileLit HTTP API.
+// Package handlers exposes the Fling HTTP API.
 package handlers
 
 import (
@@ -8,10 +8,10 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"filelit/internal/auth"
-	"filelit/internal/config"
-	"filelit/internal/storage"
-	"filelit/internal/store"
+	"fling/internal/auth"
+	"fling/internal/config"
+	"fling/internal/storage"
+	"fling/internal/store"
 )
 
 type Server struct {

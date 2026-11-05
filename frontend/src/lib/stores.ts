@@ -21,7 +21,7 @@ export async function refreshBuckets() {
   }
 }
 
-const SENDER_KEY = 'filelit_sender'
+const SENDER_KEY = 'fling_sender'
 
 export function getSender(): string {
   return localStorage.getItem(SENDER_KEY) ?? ''

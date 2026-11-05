@@ -19,9 +19,9 @@ type Config struct {
 
 	SecretKey string
 
-	// FileLitPassword enables shared-password auth for requests that are not
+	// FlingPassword enables shared-password auth for requests that are not
 	// trusted. When empty, the app is fully open.
-	FileLitPassword string
+	FlingPassword string
 
 	// TrustedNetworks is a list of CIDRs; requests from these IPs skip auth.
 	TrustedNetworks []netip.Prefix
@@ -29,7 +29,7 @@ type Config struct {
 	// skip auth (e.g. the internal LAN domain published only inside the network).
 	TrustedHosts []string
 	// TrustProxy makes the trusted-network check use X-Forwarded-For instead of
-	// the direct peer address (set when FileLit runs behind a reverse proxy).
+	// the direct peer address (set when Fling runs behind a reverse proxy).
 	TrustProxy bool
 
 	// AuthUserHeader names a request header carrying the authenticated user's
@@ -64,10 +64,10 @@ func Load() *Config {
 	return &Config{
 		Addr:              env("ADDR", ":8080"),
 		DataDir:           dataDir,
-		DatabaseURL:       env("DATABASE_URL", filepath.Join(dataDir, "filelit.db")),
+		DatabaseURL:       env("DATABASE_URL", filepath.Join(dataDir, "fling.db")),
 		FilesDir:          filesDir,
-		SecretKey:         env("SECRET_KEY", "change-me-filelit-dev-secret"),
-		FileLitPassword:   os.Getenv("FILELIT_PASSWORD"),
+		SecretKey:         env("SECRET_KEY", "change-me-fling-dev-secret"),
+		FlingPassword:   os.Getenv("FLING_PASSWORD"),
 		TrustedNetworks:   parseCIDRs(env("TRUSTED_NETWORKS", "127.0.0.0/8,::1/128,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12")),
 		TrustedHosts:      parseList(env("TRUSTED_HOSTS", "")),
 		TrustProxy:        envBool("TRUST_PROXY", false),
@@ -83,7 +83,7 @@ func Load() *Config {
 }
 
 func (c *Config) AuthEnabled() bool {
-	return c.FileLitPassword != ""
+	return c.FlingPassword != ""
 }
 
 // IsTrusted reports whether a request from the given remote address/host

@@ -16,12 +16,12 @@ COPY --from=frontend /build/frontend/dist ./cmd/server/static
 RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w -X main.version=${VERSION} -X main.commit=${COMMIT}" -o /out/app ./cmd/server
 
 FROM alpine:3
-RUN adduser -D -u 10001 filelit
-RUN mkdir -p /data && chown filelit:filelit /data
-USER filelit
+RUN adduser -D -u 10001 fling
+RUN mkdir -p /data && chown fling:fling /data
+USER fling
 WORKDIR /app
-COPY --from=backend /out/app ./filelit
+COPY --from=backend /out/app ./fling
 ENV ADDR=:8080 DATA_DIR=/data
 VOLUME ["/data"]
 EXPOSE 8080
-ENTRYPOINT ["./filelit"]
+ENTRYPOINT ["./fling"]
