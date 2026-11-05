@@ -44,7 +44,7 @@ jobs:
           tags: |
             type=raw,value=dev,enable=${{ github.event_name == 'push' }}
             type=raw,value=latest,enable=${{ github.event_name == 'release' }}
-            type=ref,event=release
+            type=raw,value=${{ github.event.release.tag_name || 'unused' }},enable=${{ github.event_name == 'release' }}
           labels: |
             org.opencontainers.image.title=FileLit
             org.opencontainers.image.description=Local-network file exchange service styled as a modern messenger
