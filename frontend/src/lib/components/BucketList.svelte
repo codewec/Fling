@@ -11,6 +11,7 @@
   import UserRoundIcon from '@lucide/svelte/icons/user-round'
   import { Button } from '$lib/components/ui/button'
   import * as AlertDialog from '$lib/components/ui/alert-dialog'
+  import * as Avatar from '$lib/components/ui/avatar'
   import * as ContextMenu from '$lib/components/ui/context-menu'
   import { Input } from '$lib/components/ui/input'
   import { cn } from '$lib/utils.js'
@@ -115,13 +116,20 @@
               {...props}
               href="/b/{bucket.id}"
               class={cn(
-                'flex items-center gap-2 rounded-lg py-2.5 pr-3 pl-3 transition-colors hover:bg-accent',
-                bucket.id === bucketId && 'bg-accent',
+                'mb-1 flex items-center gap-2.5 rounded-lg py-2 pr-3 pl-2 transition-colors last:mb-0 hover:bg-accent/60',
+                bucket.id === bucketId && 'bg-accent hover:bg-accent',
               )}
             >
-              {#if bucket.pinned}
-                <PinIcon class="size-3.5 shrink-0 text-muted-foreground" />
-              {/if}
+              <Avatar.Root class="size-9 shrink-0">
+                <Avatar.Fallback class="bg-muted text-sm font-medium text-muted-foreground">
+                  {bucket.name.trim().charAt(0).toUpperCase() || '?'}
+                </Avatar.Fallback>
+                {#if bucket.pinned}
+                  <Avatar.Badge class="border-background size-4 bg-primary text-primary-foreground">
+                    <PinIcon class="size-2.5" />
+                  </Avatar.Badge>
+                {/if}
+              </Avatar.Root>
               <span class="flex min-w-0 flex-1 flex-col">
                 <span class="truncate text-sm font-medium">{bucket.name}</span>
                 <span class="text-xs text-muted-foreground">
