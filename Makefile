@@ -3,7 +3,7 @@
 BUILD_VERSION ?= dev
 BUILD_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || printf unknown)
 
-DATA_DIR ?= ./data
+DATA_DIR ?= $(abspath ./data)
 export DATA_DIR
 
 frontend:
