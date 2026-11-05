@@ -1,4 +1,8 @@
-# FileLit
+<p align="center">
+  <img src="logo.svg" alt="FileLit logo" width="96" height="96">
+</p>
+
+<h1 align="center">FileLit</h1>
 
 Self-hosted file exchange service for your local network, styled as a modern messenger. Move text and files between computers over LAN through a Telegram-like web UI — no accounts, no cloud, single binary.
 
