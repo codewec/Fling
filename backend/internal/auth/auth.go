@@ -121,7 +121,9 @@ func (s *Service) Middleware(cfg *config.Config) func(http.Handler) http.Handler
 	}
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if guard.Allow(r) || public[r.URL.Path] {
+			// Share links are public: the unguessable message ID is the
+			// capability, so they must work for recipients without a session.
+			if guard.Allow(r) || public[r.URL.Path] || strings.HasPrefix(r.URL.Path, "/api/share/") {
 				next.ServeHTTP(w, r)
 				return
 			}

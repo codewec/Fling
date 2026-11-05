@@ -12,8 +12,10 @@
   import BucketList from '$lib/components/BucketList.svelte'
   import ChatView from '$lib/components/ChatView.svelte'
   import LoginDialog from '$lib/components/LoginDialog.svelte'
+  import SharePage from '$lib/components/SharePage.svelte'
 
   let bucketId = $derived($routePath.startsWith('/b/') ? $routePath.slice(3) : '')
+  let shareId = $derived($routePath.startsWith('/s/') ? $routePath.slice(3) : '')
   let activeBucket = $derived($buckets.find((b) => b.id === bucketId))
 
   let bucketsInterval = setInterval(refreshBuckets, 15000)
@@ -40,6 +42,8 @@
   </div>
 {:else if $auth.auth_required}
   <LoginDialog />
+{:else if shareId}
+  <SharePage messageId={shareId} />
 {:else}
   <div class="flex h-dvh overflow-hidden">
     <aside

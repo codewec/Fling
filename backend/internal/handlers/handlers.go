@@ -43,6 +43,9 @@ func (s *Server) Routes(r chi.Router) {
 	r.Delete("/messages/{id}", s.DeleteMessage)
 
 	r.Get("/files/{id}", s.DownloadFile)
+
+	r.Get("/share/{id}", s.ShareMessage)
+	r.Get("/share/{id}/file", s.ShareFile)
 }
 
 type bucketJSON struct {

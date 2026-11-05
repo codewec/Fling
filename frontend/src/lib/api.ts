@@ -89,6 +89,8 @@ export const api = {
   pinMessage: (id: string, pinned: boolean) =>
     request<void>(`/api/messages/${id}/pin`, jsonBody({ pinned })),
   deleteMessage: (id: string) => request<void>(`/api/messages/${id}`, { method: 'DELETE' }),
+
+  share: (id: string) => request<{ message: Message }>(`/api/share/${id}`),
 }
 
 export function uploadFile(
@@ -127,6 +129,14 @@ export function uploadFile(
 
 export function fileUrl(id: string, inline = false): string {
   return `/api/files/${id}${inline ? '?inline=1' : ''}`
+}
+
+export function shareUrl(id: string): string {
+  return `${window.location.origin}/s/${id}`
+}
+
+export function shareFileUrl(id: string, download = false): string {
+  return `/api/share/${id}/file${download ? '?download=1' : ''}`
 }
 
 export function formatSize(bytes: number): string {

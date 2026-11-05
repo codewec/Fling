@@ -15,6 +15,8 @@
   import PinOffIcon from '@lucide/svelte/icons/pin-off'
   import TrashIcon from '@lucide/svelte/icons/trash-2'
   import CopyIcon from '@lucide/svelte/icons/copy'
+  import ShareIcon from '@lucide/svelte/icons/share-2'
+  import ShareDialog from './ShareDialog.svelte'
 
   let {
     message,
@@ -58,6 +60,7 @@
   let isPdf = $derived(mime === 'application/pdf')
   let canPreview = $derived(isText || isImage || isPdf)
 
+  let shareOpen = $state(false)
   let previewOpen = $state(false)
   let previewKind = $state<'text' | 'image' | 'pdf' | null>(null)
   let textPreview = $state<string | null>(null)
@@ -162,6 +165,9 @@
           <CopyIcon class="size-3.5" />
         </Button>
       {/if}
+      <Button size="icon" variant="ghost" class="size-6" onclick={() => (shareOpen = true)} aria-label="Share">
+        <ShareIcon class="size-3.5" />
+      </Button>
       <Button
         size="icon"
         variant="ghost"
@@ -190,6 +196,8 @@
     </div>
   </MessageUI.Content>
 </MessageUI.Root>
+
+<ShareDialog {message} bind:open={shareOpen} />
 
 <Dialog.Root bind:open={previewOpen}>
   <Dialog.Content class="max-h-[85vh] overflow-auto sm:max-w-3xl">

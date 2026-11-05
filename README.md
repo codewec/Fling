@@ -15,6 +15,7 @@ Self-hosted file exchange service for your local network, styled as a modern mes
 - **Buckets** — create a shared space (we call it a *bucket*) and drop messages or files into it. Anyone on the network can open the list of buckets; a bucket protected by a 4-character PIN only opens after the PIN is entered (with per-client rate limiting and lockout).
 - **Files** — upload anything; images, PDFs and text files are previewable in the browser, everything else downloads with one click. Upload progress is shown live. Buckets support drag & drop.
 - **Pinning** — pin buckets to the top of the list and pin messages inside a bucket (click a pinned message in the header to jump to it).
+- **Sharing** — every message has a share button that produces a link with a QR code. Recipients open `/s/<id>` in a browser and see the text or preview/download the file — no login, no PIN: the unguessable link itself is the credential.
 - **Messages** — right-click context menus for bucket and message actions (pin, delete, copy link). Pinned messages show in a bar above the chat.
 - **Reverse-proxy auth (optional)** — put [Tinyauth](https://github.com/tinyauthapp/tinyauth) (or any forward-auth proxy) in front and Fling will trust the `Remote-User` identity header. Authenticated users can create **private buckets** visible only to them; everyone else works anonymously as before.
 - **Single binary** — the entire web UI is embedded into one Go binary. SQLite (pure-Go, no CGO) for metadata, plain files on disk for content.

@@ -603,3 +603,26 @@ func TestHeaderAuthPrivateBuckets(t *testing.T) {
 		t.Fatalf("anonymous me: %+v", me)
 	}
 }
+
+func TestShareEndpoints(t *testing.T) {
+	env := newTestEnv(t, nil)
+	b := decode[bucketResp](t, env.json(t, "POST", "/api/buckets", map[string]any{"name": "share"}))
+	msg := decode[msgResp](t, env.json(t, "POST", "/api/buckets/"+b.ID+"/messages", map[string]any{"content": "hello"}))
+
+	resp := env.json(t, "GET", "/api/share/"+msg.ID, nil)
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("share message: %d", resp.StatusCode)
+	}
+	body := decode[map[string]any](t, resp)
+	m := body["message"].(map[string]any)
+	if m["content"] != "hello" || m["kind"] != "text" {
+		t.Fatalf("share payload: %+v", m)
+	}
+
+	// Unknown id → 404.
+	resp = env.json(t, "GET", "/api/share/NOPE1234", nil)
+	if resp.StatusCode != http.StatusNotFound {
+		t.Fatalf("unknown share: %d", resp.StatusCode)
+	}
+	resp.Body.Close()
+}
