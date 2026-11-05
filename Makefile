@@ -1,4 +1,4 @@
-.PHONY: frontend backend build run dev-backend dev-frontend test clean
+.PHONY: frontend backend build run seed dev-backend dev-frontend test clean
 
 BUILD_VERSION ?= dev
 BUILD_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || printf unknown)
@@ -19,6 +19,10 @@ build: frontend backend
 
 run: build
 	./app
+
+seed:
+	mkdir -p $(DATA_DIR)/files
+	cd backend && go run ./cmd/seed -db $(abspath $(DATA_DIR)/filelit.db) -files $(abspath $(DATA_DIR)/files)
 
 dev-backend:
 	cd backend && go run ./cmd/server
