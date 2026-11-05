@@ -10,6 +10,11 @@ Self-hosted file exchange service for your local network, styled as a modern mes
 
 ![Stack](https://img.shields.io/badge/stack-Go%20%2B%20Svelte-0ea5e9) ![CGO](https://img.shields.io/badge/CGO-free-10b981)
 
+<p align="center">
+  <img src=".github/screenshots/fling-light.png" alt="Fling screenshot (light theme)" width="49%">
+  <img src=".github/screenshots/fling-dark.png" alt="Fling screenshot (dark theme)" width="49%">
+</p>
+
 ## Features
 
 - **Buckets** — create a shared space (we call it a *bucket*) and drop messages or files into it. Anyone on the network can open the list of buckets; a bucket protected by a 4-character PIN only opens after the PIN is entered (with per-client rate limiting and lockout).
@@ -117,16 +122,6 @@ services:
 The same mechanism works with any forward-auth gateway that sets a user header (Authelia, Authentik, Pocket ID, …) — point `AUTH_USER_HEADER` at whatever header your proxy sends.
 
 ## Architecture
-
-```
-┌────────────┐   HTTP    ┌──────────────────────────────────────┐
-│  Svelte 5  │ ────────▶ │  Go server (single binary)           │
-│  + Tailwind│   /api/*  │   handlers (chi)                     │
-│  + shadcn- │           │     ├── auth: guards, signed cookies │
-│  svelte    │           │     ├── store: SQLite (metadata)     │
-└────────────┘           │     └── storage: files on disk       │
-                         └──────────────────────────────────────┘
-```
 
 - **Frontend** — Svelte 5 (runes) + Vite + Tailwind 4 + [shadcn-svelte](https://www.shadcn-svelte.com/) (chat UI built on its `message-scroller`/`message`/`bubble` AI elements), compiled to static files embedded into the binary via `go:embed`.
 - **Backend** — Go 1.27, chi router, `modernc.org/sqlite` (pure Go, CGO-free, WAL mode).
