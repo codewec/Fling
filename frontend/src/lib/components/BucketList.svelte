@@ -122,19 +122,27 @@
               )}
             >
               <Avatar.Root class="size-9 shrink-0">
-                <Avatar.Fallback class="bg-muted text-sm font-medium text-muted-foreground">
-                  {bucket.name.trim().charAt(0).toUpperCase() || '?'}
+                <Avatar.Fallback
+                  class={cn(
+                    'bg-muted text-sm font-medium text-muted-foreground',
+                    bucket.pinned && 'bg-primary/10 text-primary',
+                  )}
+                >
+                  {#if bucket.pinned}
+                    <PinIcon class="size-4" />
+                  {:else}
+                    {bucket.name.trim().charAt(0).toUpperCase() || '?'}
+                  {/if}
                 </Avatar.Fallback>
-                {#if bucket.pinned}
-                  <Avatar.Badge class="border-background size-4 bg-primary text-primary-foreground">
-                    <PinIcon class="size-2.5" />
-                  </Avatar.Badge>
-                {/if}
               </Avatar.Root>
               <span class="flex min-w-0 flex-1 flex-col">
                 <span class="truncate text-sm font-medium">{bucket.name}</span>
                 <span class="text-xs text-muted-foreground">
-                  {new Date(bucket.created_at * 1000).toLocaleDateString()}
+                  {new Date(bucket.created_at * 1000).toLocaleDateString(undefined, {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
                 </span>
               </span>
               {#if bucket.private}

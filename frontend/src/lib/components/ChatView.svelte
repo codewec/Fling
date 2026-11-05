@@ -16,8 +16,9 @@
   import { api, ApiError, uploadFile, type Message } from '$lib/api'
   import { getSender, setSender, refreshAuth } from '$lib/stores'
   import MessageBubble from './MessageBubble.svelte'
-  import PinDialog from './PinDialog.svelte'
   import PinnedBar from './PinnedBar.svelte'
+  import * as InputOTP from '$lib/components/ui/input-otp'
+  import LockIcon from '@lucide/svelte/icons/lock-keyhole'
 
   let { bucketId, bucketName }: { bucketId: string; bucketName: string } = $props()
 
@@ -25,8 +26,8 @@
   let pinnedMessages = $state<Message[]>([])
   let loading = $state(true)
   let needsPin = $state(false)
-  let pinOpen = $state(false)
-  let pinAutoOpened = $state(false)
+  let pin = $state('')
+  let pinSubmitting = $state(false)
   let deleteTarget = $state<Message | null>(null)
   let deleting = $state(false)
   let text = $state('')
@@ -51,18 +52,40 @@
   function handleLoadError(err: unknown) {
     if (err instanceof ApiError && err.status === 403) {
       needsPin = true
-      if (!pinAutoOpened) {
-        pinAutoOpened = true
-        pinOpen = true
-      }
     } else if (err instanceof ApiError && err.status === 401) {
       refreshAuth()
+    }
+  }
+
+  async function submitPin() {
+    if (pin.length !== 4 || pinSubmitting) return
+    pinSubmitting = true
+    try {
+      await api.unlock(bucketId, pin)
+      pin = ''
+      await loadAll()
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 429) {
+        const retry = typeof err.data.retry_after === 'number' ? err.data.retry_after : 0
+        toast.error(`Too many attempts. Try again in ${Math.ceil(retry / 60) > 1 ? `${Math.ceil(retry / 60)} min` : `${retry} sec`}.`)
+      } else if (err instanceof ApiError && err.status === 401) {
+        const left = err.data.attempts_remaining
+        toast.error(left !== undefined ? `Wrong PIN. Attempts remaining: ${left}.` : 'Wrong PIN.')
+        pin = ''
+      } else {
+        toast.error(err instanceof Error ? err.message : 'Failed to unlock bucket')
+      }
+    } finally {
+      pinSubmitting = false
     }
   }
 
   async function loadAll() {
     loading = true
     needsPin = false
+    messages = []
+    pinnedMessages = []
+    pin = ''
     try {
       const data = await api.messages(bucketId)
       messages = data.messages
@@ -99,7 +122,6 @@
     } catch (err) {
       if (err instanceof ApiError && err.status === 403) {
         needsPin = true
-        pinOpen = true
       } else {
         toast.error(err instanceof Error ? err.message : 'Failed to send')
       }
@@ -119,7 +141,6 @@
       } catch (err) {
         if (err instanceof ApiError && err.status === 403) {
           needsPin = true
-          pinOpen = true
           return
         }
         toast.error(err instanceof Error ? `${file.name}: ${err.message}` : `Failed to upload ${file.name}`)
@@ -185,7 +206,6 @@
   $effect(() => {
     // reset per-bucket state when navigating
     bucketId
-    pinAutoOpened = false
     text = ''
     loadAll()
   })
@@ -222,9 +242,29 @@
               <Skeleton class="h-10 w-3/4 rounded-2xl" />
             </div>
           {:else if needsPin}
-            <div class="flex flex-col items-center gap-2 py-16 text-center">
-              <span class="text-sm font-medium">This bucket is protected by a PIN</span>
-              <Button variant="outline" onclick={() => (pinOpen = true)}>Enter PIN</Button>
+            <div class="flex min-h-full flex-col items-center justify-center gap-5 py-16 text-center">
+              <span class="flex size-14 items-center justify-center rounded-full bg-muted">
+                <LockIcon class="size-6 text-muted-foreground" />
+              </span>
+              <div class="flex flex-col gap-1">
+                <span class="text-base font-semibold">This bucket is protected</span>
+                <span class="text-sm text-muted-foreground">Enter the 4-character PIN to open it</span>
+              </div>
+              <InputOTP.Root
+                bind:value={pin}
+                maxlength={4}
+                disabled={pinSubmitting}
+                aria-label="PIN"
+                onComplete={submitPin}
+              >
+                {#snippet children({ cells })}
+                  <InputOTP.Group>
+                    {#each cells as cell (cell)}
+                      <InputOTP.Slot {cell} class="size-14 text-2xl" />
+                    {/each}
+                  </InputOTP.Group>
+                {/snippet}
+              </InputOTP.Root>
             </div>
           {:else if messages.length === 0}
             <div class="py-16 text-center text-sm text-muted-foreground">
@@ -344,8 +384,6 @@
     </div>
   {/if}
 </div>
-
-<PinDialog {bucketId} bind:open={pinOpen} onUnlocked={loadAll} />
 
 <AlertDialog.Root open={deleteTarget !== null} onOpenChange={(o) => !o && (deleteTarget = null)}>
   <AlertDialog.Content>

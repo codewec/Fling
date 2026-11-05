@@ -5,6 +5,7 @@
   import { Input } from '$lib/components/ui/input'
   import { Switch } from '$lib/components/ui/switch'
   import * as Field from '$lib/components/ui/field'
+  import * as InputOTP from '$lib/components/ui/input-otp'
   import { Spinner } from '$lib/components/ui/spinner'
   import { api } from '$lib/api'
   import { push } from '$lib/router'
@@ -72,11 +73,18 @@
         <Switch id="bucket-pin-switch" bind:checked={usePin} />
       </Field.Field>
       {#if usePin}
-        <Field.Field>
-          <Field.FieldLabel for="bucket-pin">PIN</Field.FieldLabel>
-          <Input id="bucket-pin" bind:value={pin} maxlength={4} placeholder="0000" class="tracking-[0.5em]" />
+        <div class="flex flex-col items-center gap-2 py-1">
+          <InputOTP.Root bind:value={pin} maxlength={4} aria-label="PIN">
+            {#snippet children({ cells })}
+              <InputOTP.Group>
+                {#each cells as cell (cell)}
+                  <InputOTP.Slot {cell} class="size-14 text-2xl" />
+                {/each}
+              </InputOTP.Group>
+            {/snippet}
+          </InputOTP.Root>
           <Field.FieldDescription>The bucket opens only after the PIN is entered.</Field.FieldDescription>
-        </Field.Field>
+        </div>
       {/if}
       {#if $auth?.user}
         <Field.Field class="flex-row items-center justify-between">

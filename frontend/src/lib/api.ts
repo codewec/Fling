@@ -144,9 +144,9 @@ export function formatSize(bytes: number): string {
 
 export function formatTime(ts: number): string {
   const d = new Date(ts * 1000)
-  const now = new Date()
-  const time = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
-  const sameDay = d.toDateString() === now.toDateString()
+  const sameDay = d.toDateString() === new Date().toDateString()
+  const time = d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
   if (sameDay) return time
-  return `${String(d.getDate()).padStart(2, '0')}.${String(d.getMonth() + 1).padStart(2, '0')} ${time}`
+  const date = d.toLocaleDateString(undefined, { day: 'numeric', month: 'short' })
+  return `${date} ${time}`
 }
