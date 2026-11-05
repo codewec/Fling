@@ -4,7 +4,7 @@ BUILD_VERSION ?= dev
 BUILD_COMMIT ?= $(shell git rev-parse --short HEAD 2>/dev/null || printf unknown)
 
 DATA_DIR ?= $(abspath ./data)
-export DATA_DIR
+export FLING_DATA_DIR := $(DATA_DIR)
 
 frontend:
 	cd frontend && pnpm install --frozen-lockfile && pnpm run build
@@ -34,6 +34,6 @@ test:
 	cd backend && go test ./...
 
 clean:
-	rm -rf frontend/dist app data
+	rm -rf frontend/dist app $(DATA_DIR)
 	mkdir -p backend/cmd/server/static
 	touch backend/cmd/server/static/.gitkeep

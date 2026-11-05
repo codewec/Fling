@@ -46,7 +46,7 @@ services:
       - fling-data:/data
     environment:
       # see table below; everything is optional
-      - MAX_UPLOAD_MB=512
+      - FLING_MAX_UPLOAD_MB=512
 
 volumes:
   fling-data:
@@ -56,16 +56,28 @@ volumes:
 
 All configuration is via environment variables (a local `.env` file is picked up automatically).
 
+All variables carry the `FLING_` prefix so they never clash with other applications running on the same host.
+
 | Variable | Default | Description |
 |---|---|---|
-| `ADDR` | `:8080` | Listen address. |
-| `DATA_DIR` | `./data` | Directory for the SQLite database and uploaded files. |
-| `FILES_DIR` | `$DATA_DIR/files` | Where file content is stored. |
-| `DATABASE_URL` | `$DATA_DIR/fling.db` | SQLite database path. |
-| `SECRET_KEY` | dev value | HMAC secret for signed cookies. **Change in any real deployment.** |
-| `MAX_UPLOAD_MB` | `512` | Per-file upload size limit. |
-| `PIN_MAX_ATTEMPTS` | `5` | Wrong PIN attempts before lockout. |
-| `PIN_LOCKOUT_MINUTES` | `15` | Lockout duration after too many wrong PINs. |
+| `FLING_SECRET_KEY` | dev value | HMAC secret for signed cookies. **Change in any real deployment.** |
+| `FLING_MAX_UPLOAD_MB` | `512` | Per-file upload size limit. |
+| `FLING_PIN_MAX_ATTEMPTS` | `5` | Wrong PIN attempts before lockout. |
+| `FLING_PIN_LOCKOUT_MINUTES` | `15` | Lockout duration after too many wrong PINs. |
+
+<details>
+<summary>Advanced (only for non-Docker installs)</summary>
+
+With the official Docker image you never need these — the container sets them for you.
+
+| Variable | Default | Description |
+|---|---|---|
+| `FLING_ADDR` | `:8080` | Listen address. |
+| `FLING_DATA_DIR` | `./data` | Directory for the SQLite database and uploaded files. |
+| `FLING_FILES_DIR` | `$FLING_DATA_DIR/files` | Where file content is stored. |
+| `FLING_DATABASE_URL` | `$FLING_DATA_DIR/fling.db` | SQLite database path. |
+
+</details>
 
 ### Access control
 
@@ -80,20 +92,20 @@ FLING_PASSWORD=s3cret ./app
 Requests from trusted networks/hosts skip the challenge (handy for "internal domain in LAN, password from the internet"):
 
 ```bash
-TRUSTED_NETWORKS=192.168.0.0/16,10.0.0.0/8   # default already covers RFC1918 + localhost
-TRUSTED_HOSTS=files.lan                       # hostnames that skip auth
-TRUST_PROXY=true                              # behind a reverse proxy: trust X-Forwarded-For
+FLING_TRUSTED_NETWORKS=192.168.0.0/16,10.0.0.0/8   # default already covers RFC1918 + localhost
+FLING_TRUSTED_HOSTS=files.lan                       # hostnames that skip auth
+FLING_TRUST_PROXY=true                              # behind a reverse proxy: trust X-Forwarded-For
 ```
 
 **2. Forward-auth identity header (Tinyauth)** — instead of a Fling password, let a reverse proxy authenticate users and pass the identity through a header:
 
 ```bash
-AUTH_USER_HEADER=Remote-User ./app
+FLING_AUTH_USER_HEADER=Remote-User ./app
 ```
 
 Only set this when **every** request really passes through a proxy that strips client-supplied copies of the header (Tinyauth's forward-auth does exactly that) — otherwise anyone can spoof an identity.
 
-With `AUTH_USER_HEADER` set, requests carrying the header are treated as that user; requests without it are anonymous. Authenticated users get one extra feature: **private buckets** (a toggle in the "New bucket" dialog) that are hidden from everyone else at the SQL level and return 403 for non-owners on every endpoint. Public buckets behave exactly as before.
+With `FLING_AUTH_USER_HEADER` set, requests carrying the header are treated as that user; requests without it are anonymous. Authenticated users get one extra feature: **private buckets** (a toggle in the "New bucket" dialog) that are hidden from everyone else at the SQL level and return 403 for non-owners on every endpoint. Public buckets behave exactly as before.
 
 ### Tinyauth example (Caddy)
 
@@ -113,13 +125,13 @@ services:
   fling:
     build: .
     environment:
-      - AUTH_USER_HEADER=Remote-User
+      - FLING_AUTH_USER_HEADER=Remote-User
   tinyauth:
     image: ghcr.io/tinyauthapp/tinyauth:latest
     # ... see https://tinyauth.app/docs/
 ```
 
-The same mechanism works with any forward-auth gateway that sets a user header (Authelia, Authentik, Pocket ID, …) — point `AUTH_USER_HEADER` at whatever header your proxy sends.
+The same mechanism works with any forward-auth gateway that sets a user header (Authelia, Authentik, Pocket ID, …) — point `FLING_AUTH_USER_HEADER` at whatever header your proxy sends.
 
 ## Architecture
 

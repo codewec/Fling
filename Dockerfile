@@ -21,7 +21,7 @@ RUN mkdir -p /data && chown fling:fling /data
 USER fling
 WORKDIR /app
 COPY --from=backend /out/app ./fling
-ENV ADDR=:8080 DATA_DIR=/data
+ENV FLING_ADDR=:8080 FLING_DATA_DIR=/data
 VOLUME ["/data"]
 EXPOSE 8080
 ENTRYPOINT ["./fling"]

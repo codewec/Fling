@@ -21,7 +21,7 @@ func TestIsTrusted(t *testing.T) {
 		{"192.168.1.50:1234", "example.com", true},
 		{"192.168.1.50", "example.com", true},
 		{"[fd00::1]:80", "example.com", true},
-		{"203.0.113.5:443", "lan.internal", true},     // trusted host
+		{"203.0.113.5:443", "lan.internal", true},      // trusted host
 		{"203.0.113.5:443", "lan.internal:8080", true}, // host with port
 		{"203.0.113.5:443", "example.com", false},
 		{"10.1.2.3:80", "example.com", false},

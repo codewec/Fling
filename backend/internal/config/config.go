@@ -56,29 +56,29 @@ type Config struct {
 func Load() *Config {
 	_ = godotenv.Load()
 
-	dataDir := env("DATA_DIR", "./data")
+	dataDir := env("FLING_DATA_DIR", "./data")
 	_ = os.MkdirAll(dataDir, 0o755)
-	filesDir := env("FILES_DIR", filepath.Join(dataDir, "files"))
+	filesDir := env("FLING_FILES_DIR", filepath.Join(dataDir, "files"))
 	_ = os.MkdirAll(filesDir, 0o755)
 
 	return &Config{
-		Addr:              env("ADDR", ":8080"),
+		Addr:              env("FLING_ADDR", ":8080"),
 		DataDir:           dataDir,
-		DatabaseURL:       env("DATABASE_URL", filepath.Join(dataDir, "fling.db")),
+		DatabaseURL:       env("FLING_DATABASE_URL", filepath.Join(dataDir, "fling.db")),
 		FilesDir:          filesDir,
-		SecretKey:         env("SECRET_KEY", "change-me-fling-dev-secret"),
-		FlingPassword:   os.Getenv("FLING_PASSWORD"),
-		TrustedNetworks:   parseCIDRs(env("TRUSTED_NETWORKS", "127.0.0.0/8,::1/128,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12")),
-		TrustedHosts:      parseList(env("TRUSTED_HOSTS", "")),
-		TrustProxy:        envBool("TRUST_PROXY", false),
-		AuthUserHeader:    os.Getenv("AUTH_USER_HEADER"),
-		MaxUploadBytes:    envInt64("MAX_UPLOAD_MB", 512) * 1024 * 1024,
-		PINMaxAttempts:    envInt("PIN_MAX_ATTEMPTS", 5),
-		PINLockoutMinutes: envInt("PIN_LOCKOUT_MINUTES", 15),
-		OIDCIssuer:        os.Getenv("OIDC_ISSUER"),
-		OIDCClientID:      os.Getenv("OIDC_CLIENT_ID"),
-		OIDCClientSecret:  os.Getenv("OIDC_CLIENT_SECRET"),
-		OIDCRedirectURL:   os.Getenv("OIDC_REDIRECT_URL"),
+		SecretKey:         env("FLING_SECRET_KEY", "change-me-fling-dev-secret"),
+		FlingPassword:     os.Getenv("FLING_PASSWORD"),
+		TrustedNetworks:   parseCIDRs(env("FLING_TRUSTED_NETWORKS", "127.0.0.0/8,::1/128,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12")),
+		TrustedHosts:      parseList(env("FLING_TRUSTED_HOSTS", "")),
+		TrustProxy:        envBool("FLING_TRUST_PROXY", false),
+		AuthUserHeader:    os.Getenv("FLING_AUTH_USER_HEADER"),
+		MaxUploadBytes:    envInt64("FLING_MAX_UPLOAD_MB", 512) * 1024 * 1024,
+		PINMaxAttempts:    envInt("FLING_PIN_MAX_ATTEMPTS", 5),
+		PINLockoutMinutes: envInt("FLING_PIN_LOCKOUT_MINUTES", 15),
+		OIDCIssuer:        os.Getenv("FLING_OIDC_ISSUER"),
+		OIDCClientID:      os.Getenv("FLING_OIDC_CLIENT_ID"),
+		OIDCClientSecret:  os.Getenv("FLING_OIDC_CLIENT_SECRET"),
+		OIDCRedirectURL:   os.Getenv("FLING_OIDC_REDIRECT_URL"),
 	}
 }
 

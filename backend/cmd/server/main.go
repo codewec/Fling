@@ -30,7 +30,7 @@ func main() {
 
 	cfg := config.Load()
 	if strings.TrimSpace(cfg.SecretKey) == "change-me-fling-dev-secret" {
-		log.Printf("WARNING: using the default SECRET_KEY; set a long random value in production")
+		log.Printf("WARNING: using the default FLING_SECRET_KEY; set a long random value in production")
 	}
 
 	database, err := store.New(cfg.DatabaseURL)
