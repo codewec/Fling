@@ -130,7 +130,7 @@ The same mechanism works with any forward-auth gateway that sets a user header (
 
 ### Database migrations
 
-Schema is created with `CREATE TABLE IF NOT EXISTS`; new columns are added by idempotent `ALTER TABLE` statements (errors about already-existing columns are ignored), so an old database upgrades transparently on first start.
+Schema is created with a single idempotent DDL block (`CREATE TABLE IF NOT EXISTS …`), so a fresh database is fully initialized on first start and re-running the migration is a no-op.
 
 ## Building from source
 
@@ -141,6 +141,16 @@ make build   # builds frontend, embeds it, produces ./app
 make run     # build + run
 make test    # go test ./...
 ```
+
+### Seed demo data
+
+To populate a database with demo buckets and messages (useful during development or first deployment):
+
+```bash
+go run ./cmd/seed -db ./data/filelit.db -files ./data/files
+```
+
+Creates a public "General" bucket with a conversation, a pinned message and a demo file, a pinned "Quick transfer" bucket, a PIN-protected bucket (PIN `1234`) and a private bucket owned by `-owner` (default `alice`). Seed only into an empty/test database — it always inserts new rows.
 
 For development run backend and frontend separately (`make dev-backend` / `make dev-frontend` — the Vite dev server proxies `/api` to the backend).
 

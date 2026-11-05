@@ -8,7 +8,6 @@ import (
 	"encoding/base32"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	_ "modernc.org/sqlite"
@@ -66,6 +65,9 @@ CREATE TABLE IF NOT EXISTS buckets (
   name TEXT NOT NULL,
   pin_hash TEXT,
   pin_salt TEXT,
+  pinned INTEGER NOT NULL DEFAULT 0,
+  owner TEXT NOT NULL DEFAULT '',
+  private INTEGER NOT NULL DEFAULT 0,
   created_at INTEGER NOT NULL
 );
 CREATE TABLE IF NOT EXISTS messages (
@@ -78,6 +80,7 @@ CREATE TABLE IF NOT EXISTS messages (
   size INTEGER,
   storage_key TEXT,
   sender TEXT,
+  pinned INTEGER NOT NULL DEFAULT 0,
   created_at INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_messages_bucket ON messages(bucket_id, created_at, id);
@@ -88,21 +91,7 @@ CREATE TABLE IF NOT EXISTS pin_attempts (
   locked_until INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (fp, bucket_id)
 );`)
-	if err != nil {
-		return err
-	}
-	// Add pinned columns to databases created before pinning existed.
-	for _, stmt := range []string{
-		`ALTER TABLE buckets ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0`,
-		`ALTER TABLE messages ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0`,
-		`ALTER TABLE buckets ADD COLUMN owner TEXT NOT NULL DEFAULT ''`,
-		`ALTER TABLE buckets ADD COLUMN private INTEGER NOT NULL DEFAULT 0`,
-	} {
-		if _, err := s.db.Exec(stmt); err != nil && !strings.Contains(err.Error(), "duplicate column name") {
-			return err
-		}
-	}
-	return nil
+	return err
 }
 
 // NewID returns a short URL-friendly random code.
